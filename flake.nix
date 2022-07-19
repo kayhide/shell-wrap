@@ -9,6 +9,17 @@
     flake-utils.lib.eachDefaultSystem
       (system:
         let
+          # my-ruby = p:
+          #   p.ruby_3_1.overrideAttrs (oldAttrs: {
+          #     nativeBuildInputs =
+          #       oldAttrs.nativeBuildInputs or [] ++ [
+          #         p.makeWrapper
+          #       ];
+          #     postFixup = (oldAttrs.postFixup or "") + ''
+          #       wrapProgram $out/bin/ruby \
+          #         --set LD_LIBRARY_PATH x
+          #     '';
+          #   });
           env-overlay = self: super: {
             app-env = super.buildEnv {
               name = "app-env";
@@ -20,10 +31,22 @@
 
                 libiconv
                 zlib
+                # (my-ruby self)
                 ruby_3_1
 
                 postgresql_12
               ];
+
+              nativeBuildInputs = [
+                self.makeWrapper
+              ];
+
+              postBuild = ''
+                wrapProgram $out/bin/ruby \
+                  --set LD_LIBRARY_PATH x
+                wrapProgram $out/bin/gem \
+                  --set LD_LIBRARY_PATH x
+              '';
             };
           };
 

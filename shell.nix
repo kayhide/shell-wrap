@@ -25,7 +25,7 @@ pkgs.mkShell {
     stdenv.cc # racc
   ];
 
-  shellHook = ''
-    export "LD_LIBRARY_PATH=${lib-path}"
-  '';
+  # shellHook = ''
+  #   export "LD_LIBRARY_PATH=${lib-path}"
+  # '';
 }
